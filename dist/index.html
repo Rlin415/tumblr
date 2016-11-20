@@ -1,0 +1,67 @@
+<!doctype html>
+
+<html ng-app="tumblr">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+  <body>
+
+    <main ng-controller="PostController as ctrl">
+      
+      <div class="container">
+        
+        <section class="posts">
+          <form class="searchBar">
+            <label for="name">Blog Name:</label>
+            <input type="text" id="name" ng-model="name">
+            <label for="tag">Tag:</label>
+            <input type="text" id="tag" ng-model="tag">
+            <input type="submit" value="Search" ng-click="ctrl.getPosts(name, tag)">
+          </form>
+          <article ng-repeat="post in ctrl.posts">
+            <h3>Blog name: {{ post.blog_name }}</h3>
+            <img ng-if="post.type === 'photo'" ng-src="{{ post.photos[0].original_size.url }}" height="100" width="100" alt="post's photo">
+            <div ng-bind-html='ctrl.$sce.trustAsHtml(post.embed)' ng-if="post.type === 'audio'"></div>
+            <div ng-if="post.type === 'video'"> 
+              <p ng-if="!post.video_url">Click on thumbnail to watch video</p> <!-- Some video posts don't have a video_url property so we redirect them to the post_url to watch the video-->
+              <a ng-if="!post.video_url" ng-href="{{ post.post_url }}" target="_blank"><img ng-src="{{ post.thumbnail_url }}" height="100" width="100"></a>
+              <video controls ng-if="post.video_url" height="100" width="100">
+                <source ng-src="{{ ctrl.$sce.trustAsResourceUrl(post.video_url) }}">
+              </video>
+            </div>
+            <a ng-href="{{ post.url }}"><p>{{ post.summary }}</p></a>
+            <button ng-click="ctrl.addPost(post)">Add</button>
+          </article>
+        </section>
+
+        <section class="favorites">
+          <h2 class="text-center">Favorites:</h2>
+          <article ng-repeat="post in ctrl.favorites">
+            <h3>Blog name: {{ post.blog_name }}</h3>
+            <img ng-if="post.type === 'photo'" ng-src="{{ post.photos[0].original_size.url }}" height="200" width="200" alt="post's photo">
+            <div ng-if="post.type === 'audio'" ng-bind-html='ctrl.$sce.trustAsHtml(post.embed)'></div>
+            <div ng-if="post.type === 'video'">
+              <p ng-if="!post.video_url">Click on thumbnail to watch video</p>
+              <a ng-if="!post.video_url" ng-href="{{ post.post_url }}" target="_blank"><img ng-src="{{ post.thumbnail_url }}" height="200" width="200"></a>
+              <video controls ng-if="post.video_url" height="200" width="200">
+                <source ng-src="{{ ctrl.$sce.trustAsResourceUrl(post.video_url) }}">
+              </video>
+            </div>
+            <a ng-href="{{ post.url }}"><p>{{ post.summary }}</p></a>
+            <button ng-click="ctrl.removePost($index)">Remove</button>
+          </article>
+        </section>
+      
+      </div>
+    
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-sanitize.js"></script>
+    <script src="bundle.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+}
+
+.posts, .favorites {
+  flex: 1;
+}
+
+.posts {
+  border-right: thin solid;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.searchBar {
+  border-bottom: thin solid;
+}
